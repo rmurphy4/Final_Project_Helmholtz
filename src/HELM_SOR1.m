@@ -36,7 +36,7 @@ U_old(1:N,N)=(y-a_y).^2.*sin(pi*(y-a_y)/(2*(b_y-a_y)));
 % Before the start of the iteration loop, "check-in" each variable
 % that should be checkpointed in the event of restarting the job
 
-matfile = 'HELM_SOR.mat';     % mandatory; name of checkpoint mat-file
+matfile = 'HELM_SOR3.mat';     % mandatory; name of checkpoint mat-file
 s = struct();                                % mandatory; create struct for checkpointing
 s = chkin(s,{'iter'});                       % mandatory; iter is iteration loop index
 s = chkin(s,{'frequency'});                  % mandatory; frequency is checkpointing period 
@@ -48,7 +48,7 @@ nNames = length(chkNames);   % number of variables in list
 
 tic; % Timer to find the run time
 U_new = zeros(N,N);
-for i=1:100
+for i=1:1000
     U_new=U_old;
   
 
@@ -70,12 +70,12 @@ for i=1:100
     end
    U_new=L*U_new+(1-L)*U_old; % This is the SOR Method equation where lambda 
    U_error=abs((U_new-U_old)./(U_new))*100; % Checking the error
-  
+   U_old = U_new;
 end
-U_error=abs((mean(mean(U_new))-mean(mean(U_old)))./(mean(mean(U_new))))*100
-runtime=toc; % End of timer
 
-FinalValue = mean(mean(U_new (1:N,1:N))) % Needed for Grid Convergence Study
+runtime=toc; % End of timer
+error=mean(mean(U_error(2:N-1,2:N-1))) %Calculating the avergae error
+
 
 % Plotting the solution
 figure(1)
