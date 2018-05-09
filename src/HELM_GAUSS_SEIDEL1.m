@@ -3,7 +3,8 @@
 % Hemholtz Equation-Gauss Seidel Method
 clc
 clear
-N=10; % The number of increments for both x and y dimensions
+
+N=320; % The number of increments for both x and y dimensions
 h=(2*pi)/(N-1); % The increment of both x and y dimensions
 lambda=-pi; % Given constant
 
@@ -35,7 +36,7 @@ U_old(1:N,N)=(y-a_y).^2.*sin(pi*(y-a_y)/(2*(b_y-a_y)));
 % Before the start of the iteration loop, "check-in" each variable
 % that should be checkpointed in the event of restarting the job
 
-matfile = 'HELM_GAUSS_SEIDEL.mat';     % mandatory; name of checkpoint mat-file
+matfile = 'HELM_GAUSS_SEIDEL3.mat';     % mandatory; name of checkpoint mat-file
 s = struct();                                % mandatory; create struct for checkpointing
 s = chkin(s,{'iter'});                       % mandatory; iter is iteration loop index
 s = chkin(s,{'frequency'});                  % mandatory; frequency is checkpointing period 
@@ -47,7 +48,7 @@ nNames = length(chkNames);   % number of variables in list
 
 tic; % Timer to find the run time
 
-for i=1:10
+for i=1:100
     % Iterative process to solve for the new matrix using the solutions from
     U_new=U_old;
     
@@ -70,13 +71,15 @@ for i=1:10
             U_new(i,j)=(U_new(i+1,j)+ U_new(i-1,j)+U_new(i,j+1)+U_new(i,j-1)-h^2*F(i,j))/(4-h^2*lambda);
         end
     end
-   U_error=abs((mean(mean(U_new))-mean(mean(U_old)))./(mean(mean(U_new))))*100 
+   U_error=abs((U_new-U_old)./(U_new))*100;
    U_old=U_new;
 end
 
 runtime=toc; % End of timer
+error=mean(mean(U_error(2:N-1,2:N-1))) %Calculating the avergae error
 
-FinalValue = mean(mean(U_new (1:N,1:N))) % Needed for Grid Convergence Study
+
+gi=norm(U_new,2) %needed for grid convergence study
 
 % Plotting the solution
 figure(1)
