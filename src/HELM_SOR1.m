@@ -4,7 +4,7 @@
 clc
 clear
 
-N=10; % The number of increments for both x and y dimensions
+N=100; % The number of increments for both x and y dimensions
 h=(2*pi)/(N-1); % The increment of both x and y dimensions
 lambda=-pi; % Given constant
 L=1.5; %value used for the SOR method
